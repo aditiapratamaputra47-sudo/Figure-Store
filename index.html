@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FigureStore | Premium Collections</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00d4ff;
+            --secondary-color: #ff007b;
+            --bg-dark: #0a0a12;
+            --card-bg: #161625;
+            --text-light: #ffffff;
+            --image-shader: linear-gradient(rgba(0,0,0,0) 60%, rgba(0,0,0,0.85) 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; }
+
+        /* Navigation */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 8%; background: rgba(22, 22, 37, 0.95); 
+            position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+        }
+        .logo { font-size: 24px; font-weight: bold; letter-spacing: 1px; }
+        .logo span { color: var(--primary-color); }
+
+        .cart-icon { position: relative; font-size: 24px; cursor: pointer; color: var(--text-light); }
+        #cart-count {
+            position: absolute; top: -8px; right: -10px; background: var(--secondary-color);
+            font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 60vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center;
+            background: linear-gradient(rgba(10, 10, 18, 0.7), rgba(10, 10, 18, 0.9)), 
+                        url('https://images.bigbadtoystore.com/images/p/full/2025/08/83370af4-15bb-449f-9cee-100ebd8d32aa.jpg');
+            background-size: cover; background-position: center;
+        }
+
+        /* Search Bar Styles */
+        .search-container {
+            display: flex; justify-content: center; margin: 40px 0; padding: 0 8%;
+        }
+        .search-wrapper {
+            position: relative; width: 100%; max-width: 600px;
+        }
+        .search-wrapper i {
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #666; font-size: 1.2rem;
+        }
+        .search-input {
+            width: 100%; padding: 15px 20px 15px 55px; border-radius: 30px;
+            border: 1px solid #333; background: #161625; color: white; outline: none; transition: 0.3s; font-size: 1rem;
+        }
+        .search-input:focus { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
+
+        /* Sidebar Keranjang */
+        #cart-sidebar {
+            position: fixed; top: 0; right: -400px; width: 350px; height: 100%;
+            background: #11111d; z-index: 2000; transition: 0.4s;
+            padding: 25px; box-shadow: -10px 0 30px rgba(0,0,0,0.8); display: flex; flex-direction: column;
+        }
+        #cart-sidebar.active { right: 0; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        #cart-items { flex: 1; overflow-y: auto; margin-top: 20px; }
+        .cart-item { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; background: #1c1c2e; padding: 10px; border-radius: 12px; }
+        .cart-item img { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; }
+        .btn-checkout { width: 100%; padding: 15px; background: var(--primary-color); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        
+        /* Product Grid */
+        .products { padding: 0 8% 80px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; }
+        
+        .card { background: var(--card-bg); border-radius: 18px; padding: 12px; transition: 0.4s; position: relative; border: 1px solid #222; }
+        .card:hover { transform: translateY(-10px); border-color: var(--primary-color); }
+
+        .image-container { position: relative; border-radius: 12px; overflow: hidden; height: 300px; }
+        .image-container::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--image-shader); pointer-events: none; }
+        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .card:hover img { transform: scale(1.1); }
+
+        .card h3 { margin: 15px 0 5px; font-size: 1.1rem; color: #eee; }
+        .price { color: #00ffaa; font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; display: block; }
+        .btn-add { width: 100%; padding: 12px; background: #222; color: #fff; border: 1px solid #333; border-radius: 10px; cursor: pointer; font-weight: 600; }
+        .btn-add:hover { background: var(--primary-color); color: #000; }
+
+        footer {
+    background: #0a0a12;
+    color: #fff;
+    padding: 50px 8% 20px;
+    border-top: 1px solid #222;
+    margin-top: 50px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.footer-logo p {
+    font-size: 14px;
+    color: #888;
+    margin-top: 10px;
+}
+
+.footer-links h4, .footer-social h4 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.footer-links a {
+    display: block;
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #222;
+    color: #666;
+    font-size: 12px;
+}
+    </style>
+</head>
+<body>
+    
+
+    <nav>
+        <div class="logo">Figure<span>Store</span></div>
+        <div class="cart-icon" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count">0</span>
+        </div>
+    </nav>
+
+    <div id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Keranjang</h3>
+            <i class="fas fa-times close-cart" onclick="toggleCart()"></i>
+        </div>
+        <div id="cart-items"></div>
+        <div class="cart-footer">
+            <div class="total-price">
+                <span>Total:</span>
+                <span id="total-amount">Rp 0</span>
+            </div>
+            <button class="btn-checkout" onclick="checkoutWA()">Pesan via WhatsApp</button>
+        </div>
+    </div>
+
+    <header class="hero">
+        <h1>Koleksi Eksklusif Karakter Favorit Mu</h1>
+        <h3>Action Figure Original Premium</h3>
+    </header>
+
+    <div class="search-container">
+        <div class="search-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="product-search" class="search-input" placeholder="Cari nama figure..." oninput="handleSearch()">
+        </div>
+    </div>
+    
+
+    <section class="products">
+        <div class="product-grid" id="product-list"></div>
+    </section>
+
+    <script>
+        const products = [
+            { id: 1, name: "Elaina - Majo No Tabi-Tabi", price: 1150000, img: "https://titipjepang.com/wp-content/uploads/2020/12/POTJ1120-763-02.jpg" },
+            { id: 2, name: "Sunaookami Shiroko - Blue Archive", price: 1300000, img: "https://titipjepang.com/wp-content/uploads/2025/04/TFGQ-0844-5.jpg" },
+            { id: 3, name: "Oguri Cap - Uma Musume", price: 1000000, img: "https://animateusaonlineshop.com/cdn/shop/files/OguriCap-6.jpg?v=1755902242&width=600" },
+            { id: 4, name: "Sorasaki Hina - Blue Archive", price: 1500000, img: "https://m.media-amazon.com/images/I/61X4LbicmdL._SY679_.jpg" },
+            { id: 5, name: "Tamamo Cross - Uma Musume", price: 999000, img: "https://m.media-amazon.com/images/I/713UQJeLv7L._AC_SY879_.jpg" },
+            { id: 6, name: "Enterprise - Azur Lane", price: 2000000, img: "https://www.gkfigure.com/cdn/shop/files/image_d5f18d70-3f4d-4ad1-bb4f-cdf4ac9a8d01.jpg?v=1683119381&width=1100" },
+            { id: 7, name: "Takanashi Hoshino - Blue Archive", price: 990000, img: "https://www.actionfilmfiguren.de/images/product_images/original_images/x_mafc01523_a.jpg" },
+            { id: 8, name: "Saya - Majo No Tabi-Tabi", price: 995000, img: "https://cdn1.npcdn.net/images/16898337814ba2e542601d5746b11f61366568f32b.webp?md5id=e521eb05eb8a2e794ac25a62e663e370&new_width=1000&new_height=1000&size=max&w=1608536500&from=jpg&type=9" },
+            { id: 9, name: "Hyuga Hinata - Naruto Shipuden", price: 1500000, img: "https://animefigure.co.uk/wp-content/uploads/2023/06/Naruto-Shippuden-Burning-Wind-Hyuga-Hinata-Konoha-Hidden-Village-Model-Figure-Statue-Decoration-Crafts-Ornament.jpg" },
+            { id: 10, name: "Uzumaki Naruto - Naruto Shipuden", price: 1500000, img: "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/101/MTA-183092419/no_brand_action_figure_naruto_uzumaki_mode_sage_memorable_saga_special_full06_94c6a2ed.webp" },
+            { id: 11, name: "Arona - Blue Archive", price: 1000000, img: "https://goldenhead.net/wp-content/uploads/2022/10/f80caee0972ba58cf859e0f6301aaaf8-scaled.jpeg" },
+            { id: 12, name: "Plana - Blue Archive", price: 1000000, img: "https://cdn.shopify.com/s/files/1/0445/3357/9943/files/blue-archive-plana-17-complete-figure-goldenhead-figurine-yattajapan-2.jpg?v=1746163953" },
+            { id: 13, name: "Bahlil - Konoha", price: 5000000, img: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Kepala_Badan_Koordinasi_Penanaman_Modal_Bahlil_Lahadalia.jpg" },
+            { id: 14, name: "Alya Kujou - Roshidere", price: 1200000, img: "https://storage.googleapis.com/lcdn-products/5/2/3/7/5/9/523759.webp" },
+            { id: 15, name: "Gojo & Geto - Jujutsu Kaisen", price: 1850000, img: "https://cdn.shopify.com/s/files/1/0445/3357/9943/files/jujutsu-kaisen-satoru-gojo-tokyo-jujutsu-high-school-ver-17-complete-figure-good-smile-company-figurine-yattajapan-4.jpg?v=1719397716" },
+            { id: 16, name: "Silence Suzuka - Uma Musume", price: 1100000, img: "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//103/MTA-53328829/oem_pvc-figure-silence-suzuka-uma-musume-pretty-derby-18cm-_full02.jpg" },
+            { id: 17, name: "Elaina (Swimsuit) - Majo No Tabi-Tabi", price: 950000, img: "https://animota.net/cdn/shop/files/a4704e8c-a725-4978-b75a-597e02d7a97d_p_01_ja.jpg?v=1740579235&width=823"},
+            { id: 18, name: "Sorasaki Hina (Swimsuit) - Blue Archive", price: 1050000, img: "https://www.hobbydigi.com/media/catalog/product/cache/image/700x700/e9c3970ab036de70892d86c6d221abfe/g/o/good_smile_1_7_pvc_figure_-_yuuka_daily_life_of_a_treasurer_ver._blue_archive__240405020902.jpg"},
+            { id: 19, name: "yuta okkotsu - Jujutsu Kaisen", price: 1900000, img: "https://cdn.shopify.com/s/files/1/0445/3357/9943/products/POPUPPARADESpecialGradeVengefulCursedSpiritRikaJujutsuKaisen0VersionL_YutaOkkotsuAnimeFigureYattaJapan.jpg?v=1677598651"},
+            { id: 20, name: "shirao eri - Blue Archive ", price: 1380000, img: "https://ae-pic-a1.aliexpress-media.com/kf/S60ab4818d92141fc85d941557d90a0f0U.jpg"},
+            // Tambahkan data lainnya di sini
+        ];
+        
+
+        let cart = [];
+
+        function handleSearch() {
+            const query = document.getElementById('product-search').value.toLowerCase();
+            const list = document.getElementById('product-list');
+            list.innerHTML = "";
+            
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                list.innerHTML = "<p style='grid-column: 1/-1; text-align: center; opacity: 0.5;'>Produk tidak ditemukan.</p>";
+            }
+
+            filtered.forEach(p => {
+                list.innerHTML += `
+                    <div class="card">
+                        <div class="image-container">
+                            <img src="${p.img}">
+                        </div>
+                        <h3>${p.name}</h3>
+                        <span class="price">Rp ${p.price.toLocaleString()}</span>
+                        <button class="btn-add" onclick="addToCart(${p.id})">Tambah Ke Keranjang</button>
+                    </div>`;
+            });
+        }
+
+        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('active'); }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            cart.push(product);
+            updateCartUI();
+            if(!document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const container = document.getElementById('cart-items');
+            container.innerHTML = "";
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price;
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.img}">
+                        <div class="cart-item-info">
+                            <h4>${item.name}</h4>
+                            <p>Rp ${item.price.toLocaleString()}</p>
+                        </div>
+                        <i class="fas fa-trash" style="margin-left:auto; cursor:pointer; color:#ff4444" onclick="removeFromCart(${index})"></i>
+                    </div>`;
+            });
+            document.getElementById('total-amount').innerText = `Rp ${total.toLocaleString()}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function checkoutWA() {
+            if(cart.length === 0) return alert("Keranjang kosong!");
+            let msg = "Halo FigureStore, saya mau order:\n\n";
+            cart.forEach((item, i) => msg += `${i+1}. ${item.name}\n`);
+            msg += `\n*Total: ${document.getElementById('total-amount').innerText}*`;
+            window.open(`https://wa.me/628123456789?text=${encodeURIComponent(msg)}`);
+        }
+
+        // Jalankan pertama kali
+        handleSearch();
+    </script>
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">
+            <div class="logo">Figure<span>Store</span></div>
+            <p>Destinasi koleksi action figure original terbaik di Indonesia.</p>
+        </div>
+        <div class="footer-links">
+            <h4>Navigasi</h4>
+            <a href="#">Beranda</a>
+            <a href="#">Koleksi</a>
+            <a href="#">Bantuan</a>
+        </div>
+        <div class="footer-social">
+            <h4>Ikuti Kami</h4>
+            <div class="social-icons">
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-twitter"></i>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 FigureStore. Built with ❤️ for Collectors.</p>
+    </div>
+</footer>
+</body>
+</html>
